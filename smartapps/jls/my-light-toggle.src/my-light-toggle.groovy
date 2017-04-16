@@ -78,8 +78,8 @@ def toggleSwitches(evt) {
 //        	log.debug "$thisSwitch.label"
 //        	thisSwitch.off()
 		if (between) {
-		        switchesToToggle.on()
-                        masterToggle.on()
+		        switchesToToggle.off()
+                        masterToggle.off()
 		}
 
         }
