@@ -27,15 +27,20 @@ definition(
 preferences {
 	section("When this sensor detects motion...") {
 		input "motionToggler", "capability.motionSensor", title: "Motion Here", required: true, multiple: false
-    }
+        }
     
-    section("Master switch for the toggle reference...") {
-    	input "masterToggle", "capability.switch", title: "Reference switch", required: true, multiple: false
-    }
+        section("Master switch for the toggle reference...") {
+    	        input "masterToggle", "capability.switch", title: "Reference switch", required: true, multiple: false
+        }
     
-    section("Toggle lights...") {
-	    input "switchesToToggle", "capability.switch", title: "These go on/off", required: true, multiple: true
-	}
+        section("Toggle lights...") {
+	        input "switchesToToggle", "capability.switch", title: "These go on/off", required: true, multiple: true
+        }
+	
+        section("Toggle between what times?") {
+                input "fromTime", "time", title: "From", required: true
+                input "toTime", "time", title: "To", required: true
+        }
 }
 
 def installed() {
@@ -58,19 +63,25 @@ def initialize() {
 
 def toggleSwitches(evt) {
 	log.debug "$evt.value"
-  
+        def between = timeOfDayIsBetween(fromTime, toTime, new Date(), location.timeZone)
+
 	if (evt.value == "active" && masterToggle.currentSwitch == "off") {
 //    	for (thisSwitch in switchesToToggle) {
 //        	log.debug "$thisSwitch.label"
 //  			thisSwitch.on()
-		switchesToToggle.on()
-        masterToggle.on()
-    } else if (evt.value == "active" && masterToggle.currentSwitch == "on") {
+		if (between) {
+		        switchesToToggle.on()
+                        masterToggle.on()
+		}
+        } else if (evt.value == "active" && masterToggle.currentSwitch == "on") {
 //    	for (thisSwitch in switchesToToggle) {
 //        	log.debug "$thisSwitch.label"
 //        	thisSwitch.off()
-		switchesToToggle.off()
-        masterToggle.off()
+		if (between) {
+		        switchesToToggle.on()
+                        masterToggle.on()
+		}
+
         }
 
 }
